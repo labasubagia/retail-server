@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class AdminStore
+class UserType
 {
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $type)
     {
         $user = $request->user();
         if (!$user) return response('Unauthorized', 401);
-        if ($user->type != 'admin_store') return response('Only Admin Store', 403);
+        if ($user->type != $type) return response("only $type user", 403);
         return $next($request);
     }
 }
