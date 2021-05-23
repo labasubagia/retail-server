@@ -78,6 +78,9 @@ $app->configure('app');
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'admin_retail' => App\Http\Middleware\AdminRetail::class,
+    'admin_store' => App\Http\Middleware\AdminStore::class,
+    'customer' => App\Http\Middleware\Customer::class,
 ]);
 
 /*
