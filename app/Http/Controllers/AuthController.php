@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -29,7 +30,10 @@ class AuthController extends Controller
             $user->save();
             return response()->json(['success' => true, 'user' => $user]);
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 401);
+            return response()->json(
+                ['success' => false, 'error' => $e->getMessage()],
+                Response::HTTP_UNAUTHORIZED
+            );
         }
     }
 
@@ -47,7 +51,10 @@ class AuthController extends Controller
             $user = User::create($payload);
             return response()->json(['success' => true, 'user' => $user]);
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+            return response()->json(
+                ['success' => false, 'error' => $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
