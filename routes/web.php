@@ -60,7 +60,6 @@ $router->group(
     }
 );
 
-
 $router->group(
     ['prefix' => 'vendor'],
     function () use ($router) {
@@ -70,6 +69,19 @@ $router->group(
             $router->post('', 'VendorController@store');
             $router->put('{id}', 'VendorController@update');
             $router->delete('{id}', 'VendorController@destroy');
+        });
+    }
+);
+
+$router->group(
+    ['prefix' => 'product-type'],
+    function () use ($router) {
+        $router->get('', 'ProductTypeController@index');
+        $router->get('{id}', 'ProductTypeController@get');
+        $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+            $router->post('', 'ProductTypeController@store');
+            $router->put('{id}', 'ProductTypeController@update');
+            $router->delete('{id}', 'ProductTypeController@destroy');
         });
     }
 );
