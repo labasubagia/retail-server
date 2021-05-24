@@ -14,7 +14,16 @@ class ProductController extends Controller
 
     public function index()
     {
-        return response()->json(['success' => true, 'products' => Product::all()]);
+        $products = Product::select(
+            'products.*',
+            'product_types.name as type',
+            'brands.name as brand',
+        )
+            ->join('product_types', 'product_types.id', 'products.product_type_id')
+            ->join('brands', 'brands.id', 'products.brand_id')
+            ->get();
+
+        return response()->json(['success' => true, 'products' => $products]);
     }
 
     public function get(string $id)
