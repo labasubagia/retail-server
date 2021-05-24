@@ -85,3 +85,16 @@ $router->group(
         });
     }
 );
+
+$router->group(
+    ['prefix' => 'product'],
+    function () use ($router) {
+        $router->get('', 'ProductController@index');
+        $router->get('{id}', 'ProductController@get');
+        $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+            $router->post('', 'ProductController@store');
+            $router->post('{id}', 'ProductController@update');
+            $router->delete('{id}', 'ProductController@destroy');
+        });
+    }
+);
