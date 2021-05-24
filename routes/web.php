@@ -36,15 +36,14 @@ $router->group(['prefix' => 'check'], function () use ($router) {
 
 
 $router->group(
-    [
-        'prefix' => 'store',
-        'middleware' => ['auth', 'user_type:admin_retail'],
-    ],
+    ['prefix' => 'store'],
     function () use ($router) {
         $router->get('', 'StoreController@index');
         $router->get('{id}', 'StoreController@get');
-        $router->post('', 'StoreController@store');
-        $router->put('{id}', 'StoreController@update');
-        $router->delete('{id}', 'StoreController@destroy');
+        $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+            $router->post('', 'StoreController@store');
+            $router->put('{id}', 'StoreController@update');
+            $router->delete('{id}', 'StoreController@destroy');
+        });
     }
 );

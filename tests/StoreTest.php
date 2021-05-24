@@ -13,8 +13,7 @@ class StoreTest extends TestCase
 
     public function testGetAll()
     {
-        $this->actingAs($this->adminRetail())
-            ->get('/store')
+        $this->get('/store')
             ->seeStatusCode(Response::HTTP_OK)
             ->seeJson(['success' => true]);
     }
@@ -22,16 +21,14 @@ class StoreTest extends TestCase
     public function testGetSingleSuccess()
     {
         $store = Store::factory()->create();
-        $this->actingAs($this->adminRetail())
-            ->get("store/$store->id")
+        $this->get("store/$store->id")
             ->seeStatusCode(Response::HTTP_OK)
             ->seeJson(['success' => true, 'name' => $store->name]);
     }
 
     public function testGetSingleNotFound()
     {
-        $this->actingAs($this->adminRetail())
-            ->get("store/404")
+        $this->get("store/404")
             ->seeStatusCode(Response::HTTP_NOT_FOUND)
             ->seeJson(['store' => null]);
     }
