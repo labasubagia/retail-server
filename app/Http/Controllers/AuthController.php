@@ -43,7 +43,8 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'name' => 'required',
-            'type' => 'required|in:admin_retail,admin_store,customer'
+            'type' => 'required|in:admin_retail,admin_store,customer',
+            'store_id' => 'required_if:type,==,admin_store'
         ]);
         try {
             $payload = $request->only((new User)->getFillable());
