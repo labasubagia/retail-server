@@ -11,7 +11,7 @@ class ProductTypeController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json(['success' => true, 'productTypes' => ProductType::all()]);
+        return response()->json(['success' => true, 'product_types' => ProductType::all()]);
     }
 
     public function get(Request $request, string $id)
