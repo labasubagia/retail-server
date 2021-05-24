@@ -59,3 +59,17 @@ $router->group(
         });
     }
 );
+
+
+$router->group(
+    ['prefix' => 'vendor'],
+    function () use ($router) {
+        $router->get('', 'VendorController@index');
+        $router->get('{id}', 'VendorController@get');
+        $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+            $router->post('', 'VendorController@store');
+            $router->put('{id}', 'VendorController@update');
+            $router->delete('{id}', 'VendorController@destroy');
+        });
+    }
+);
