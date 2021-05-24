@@ -49,6 +49,7 @@ class AuthController extends Controller
         try {
             $payload = $request->only((new User)->getFillable());
             $payload['password'] = Hash::make($payload['password']);
+            $payload['store_id'] = $payload['store_id'] ?: null;
             $user = User::create($payload);
             return response()->json(['success' => true, 'user' => $user]);
         } catch (Exception $e) {
