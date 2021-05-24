@@ -34,7 +34,6 @@ $router->group(['prefix' => 'check'], function () use ($router) {
     );
 });
 
-
 $router->group(
     ['prefix' => 'store'],
     function () use ($router) {
@@ -44,6 +43,19 @@ $router->group(
             $router->post('', 'StoreController@store');
             $router->put('{id}', 'StoreController@update');
             $router->delete('{id}', 'StoreController@destroy');
+        });
+    }
+);
+
+$router->group(
+    ['prefix' => 'brand'],
+    function () use ($router) {
+        $router->get('', 'BrandController@index');
+        $router->get('{id}', 'BrandController@get');
+        $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+            $router->post('', 'BrandController@store');
+            $router->put('{id}', 'BrandController@update');
+            $router->delete('{id}', 'BrandController@destroy');
         });
     }
 );
