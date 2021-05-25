@@ -40,6 +40,11 @@ class InventoryController extends Controller
             'vendor_id' => 'required',
         ]);
         try {
+            $isExist = Inventory::where('store_id', $request->user()->store_id)
+                ->where('product_id', $request->product_id)
+                ->first();
+            if ($isExist) throw new Exception('Product already exists');
+
             $payload = $request->only((new Inventory)->getFillable());
             $inventory = Inventory::create($payload);
             return response()->json(['success' => true, 'inventory' => $inventory]);
