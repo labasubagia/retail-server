@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 
 class Product extends Model
@@ -14,9 +15,18 @@ class Product extends Model
         'name', 'barcode', 'brand_id', 'product_type_id', 'image'
     ];
 
-    protected $appends = [
-        'image_url'
-    ];
+    public function scopeInfo($query)
+    {
+        return $query
+            ->join('product_types', 'product_types.id', 'products.product_type_id')
+            ->join('brands', 'brands.id', 'products.brand_id')
+            ->select(
+                'products.*',
+                'product_types.name as type',
+                'brands.name as brand',
+                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as image_url")
+            );
+    }
 
     public function type()
     {
@@ -26,10 +36,5 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
-    }
-
-    public function getImageUrlAttribute()
-    {
-        return URL::asset("images/product/$this->image");
     }
 }

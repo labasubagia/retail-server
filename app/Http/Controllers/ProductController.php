@@ -14,21 +14,13 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::select(
-            'products.*',
-            'product_types.name as type',
-            'brands.name as brand',
-        )
-            ->join('product_types', 'product_types.id', 'products.product_type_id')
-            ->join('brands', 'brands.id', 'products.brand_id')
-            ->get();
-
+        $products = Product::info()->get();
         return response()->json(['success' => true, 'products' => $products]);
     }
 
     public function get(string $id)
     {
-        $product = Product::find($id);
+        $product = Product::info()->find($id);
         return response()->json(
             ['success' => true, 'product' => $product],
             $product ? Response::HTTP_OK : Response::HTTP_NOT_FOUND

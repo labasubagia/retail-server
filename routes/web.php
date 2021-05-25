@@ -98,3 +98,16 @@ $router->group(
         });
     }
 );
+
+$router->group(
+    ['prefix' => 'inventory'],
+    function () use ($router) {
+        $router->get('', 'InventoryController@index');
+        $router->get('{id}', 'InventoryController@get');
+        $router->group(['middleware' => ['auth', 'user_type:admin_store']], function () use ($router) {
+            $router->post('', 'InventoryController@store');
+            $router->put('{id}', 'InventoryController@update');
+            $router->delete('{id}', 'InventoryController@destroy');
+        });
+    }
+);
