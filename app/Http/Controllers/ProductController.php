@@ -34,7 +34,7 @@ class ProductController extends Controller
             'barcode' => 'required',
             'product_type_id' => 'required',
             'brand_id' => 'required',
-            'image' => 'image',
+            'image' => 'required|image',
         ]);
         try {
             $payload = $request->only((new Product)->getFillable());
