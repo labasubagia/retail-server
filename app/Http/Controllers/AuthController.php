@@ -23,7 +23,7 @@ class AuthController extends Controller
         ]);
 
         try {
-            $user = User::where('email', $request->input('email'))->first();
+            $user = User::with('store')->where('email', $request->input('email'))->first();
             $isSame = Hash::check($request->input('password'), $user->password);
             if (!$isSame) throw new Exception('wrong email or password');
             $user->api_token = base64_encode(Str::random(40));
