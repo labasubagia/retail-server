@@ -111,3 +111,12 @@ $router->group(
         });
     }
 );
+
+$router->group(
+    ['prefix' => 'order', 'middleware' => ['auth']],
+    function () use ($router) {
+        $router->get('', 'OrderController@index');
+        $router->post('', 'OrderController@store');
+        $router->post('{id}/status', 'OrderController@updateStatus');
+    }
+);
