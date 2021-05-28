@@ -17,15 +17,21 @@ class Product extends Model
 
     public function scopeInfo($query)
     {
+        $selected = [
+            'products.*',
+            'product_types.name as type',
+            'brands.name as brand',
+        ];
+        if (env('APP_ENV') != 'testing') {
+            array_push(
+                $selected,
+                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as image_url")
+            );
+        }
         return $query
             ->join('product_types', 'product_types.id', 'products.product_type_id')
             ->join('brands', 'brands.id', 'products.brand_id')
-            ->select(
-                'products.*',
-                'product_types.name as type',
-                'brands.name as brand',
-                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as image_url")
-            );
+            ->select($selected);
     }
 
     public function type()

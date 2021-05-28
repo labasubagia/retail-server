@@ -22,17 +22,24 @@ class OrderItem extends Model
 
     public function scopeInfo($query)
     {
+        $selected = [
+            'order_items.*',
+            'products.name',
+            'product_types.name as product_type',
+            'brands.name as brand_name',
+
+        ];
+        if (env('APP_ENV') != 'testing') {
+            array_push(
+                $selected,
+                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as product_image"),
+            );
+        }
         return $query
             ->join('products', 'products.id', 'order_items.product_id')
             ->join('brands', 'brands.id', 'products.brand_id')
             ->join('product_types', 'product_types.id', 'products.product_type_id')
-            ->select([
-                'order_items.*',
-                'products.name',
-                'product_types.name as product_type',
-                'brands.name as brand_name',
-                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as product_image"),
-            ]);
+            ->select($selected);
     }
 
     public function order()

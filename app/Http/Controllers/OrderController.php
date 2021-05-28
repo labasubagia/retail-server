@@ -15,6 +15,7 @@ class OrderController extends Controller
     {
         $user = $request->user();
         $orders = Order::info()
+            ->with('customer')
             ->when(
                 $user->type == 'customer',
                 fn ($query) => $query->where([
@@ -26,6 +27,7 @@ class OrderController extends Controller
                 $user->type == 'admin_store',
                 fn ($query) => $query->where('store_id', $user->store_id)
             )
+            ->orderBy('orders.created_at', 'desc')
             ->get();
 
         return response()->json([
@@ -33,6 +35,16 @@ class OrderController extends Controller
             'orders' => $orders
         ]);
     }
+
+    public function get(string $id)
+    {
+        $order = Order::with('customer')->info()->find($id);
+        return response()->json(
+            ['success' => true, 'order' => $order],
+            $order ? Response::HTTP_OK : Response::HTTP_NOT_FOUND
+        );
+    }
+
 
     public function store(Request $request)
     {

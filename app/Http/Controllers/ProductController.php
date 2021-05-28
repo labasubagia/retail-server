@@ -6,6 +6,8 @@ use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {

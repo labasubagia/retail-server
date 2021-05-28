@@ -1,5 +1,6 @@
 <?php
 
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
@@ -116,6 +117,7 @@ $router->group(
     ['prefix' => 'order', 'middleware' => ['auth']],
     function () use ($router) {
         $router->get('', 'OrderController@index');
+        $router->get('{id}', 'OrderController@get');
         $router->post('', 'OrderController@store');
         $router->post('{id}/status', 'OrderController@updateStatus');
     }

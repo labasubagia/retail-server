@@ -3,6 +3,7 @@
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -37,7 +38,10 @@ class ProductTest extends TestCase
     {
         $product = Product::factory()->make();
         $this->actingAs($this->adminRetail())
-            ->post("/product", $product->toArray())
+            ->post("/product", array_merge(
+                $product->toArray(),
+                ['image' => UploadedFile::fake()->image('file.png', 600, 600)]
+            ))
             ->seeJson(['success' => true]);
         $this->seeInDatabase((new Product)->getTable(), ['name' => $product->name]);
     }
