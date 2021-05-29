@@ -11,6 +11,10 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->get('current', 'AuthController@current');
 });
 
+$router->group(['prefix' => 'user'], function () use ($router) {
+    $router->get('type', 'UserController@getAllByType');
+});
+
 $router->group(['prefix' => 'check'], function () use ($router) {
     $router->get(
         '/is-admin-retail',

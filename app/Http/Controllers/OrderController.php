@@ -87,6 +87,7 @@ class OrderController extends Controller
 
             // order payload
             $orderPayload = $request->only((new Order)->getFillable());
+            $orderPayload['customer_id'] = $request->get('customer_id') ?: null;
             $orderPayload['created_by'] = $user->id;
             $orderPayload['total_price'] = $itemsPayload->sum('subtotal_price');
             if ($user->type == 'customer') {
