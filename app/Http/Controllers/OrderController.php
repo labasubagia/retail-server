@@ -18,10 +18,12 @@ class OrderController extends Controller
             ->with('customer')
             ->when(
                 $user->type == 'customer',
-                fn ($query) => $query->where([
-                    'created_by' => $user->id,
-                    'customer_id' => $user->id,
-                ])
+                fn ($query) => $query
+                    ->with('store')
+                    ->where([
+                        'created_by' => $user->id,
+                        'customer_id' => $user->id,
+                    ])
             )
             ->when(
                 $user->type == 'admin_store',
