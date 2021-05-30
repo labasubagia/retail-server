@@ -49,7 +49,10 @@ class ProductController extends Controller
 
             $product = Product::create($payload);
 
-            return response()->json(['success' => true, 'product' => $product]);
+            return response()->json(
+                ['success' => true, 'product' => $product],
+                Response::HTTP_CREATED
+            );
         } catch (Exception $e) {
             return response(
                 ['error' => $e->getMessage()],
@@ -73,7 +76,7 @@ class ProductController extends Controller
                 $payload['image'] = $name;
 
                 $old = "$this->imagePath/$product->image";
-                if (file_exists($old)) unlink($old);
+                if (file_exists($old) && is_file($old)) unlink($old);
             }
 
             $product->update($payload);
@@ -93,7 +96,7 @@ class ProductController extends Controller
             $product->delete();
 
             $old = "$this->imagePath/$product->image";
-            if (file_exists($old)) unlink($old);
+            if (file_exists($old) && is_file($old)) unlink($old);
 
             return response()->json(['success' => true]);
         } catch (Exception $e) {

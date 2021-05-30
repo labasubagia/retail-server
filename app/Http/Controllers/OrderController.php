@@ -71,18 +71,18 @@ class OrderController extends Controller
 
             // items payload
             $itemsPayload = collect($request->products)->map(function ($v) use ($inventories) {
-                $product = $inventories->filter(fn ($i) => $i['product_id'] == $v['id'])->first();
-                if (!$product) {
+                $inventory = $inventories->filter(fn ($i) => $i['product_id'] == $v['id'])->first();
+                if (!$inventory) {
                     throw new Exception("Product not found");
                 }
-                $subtotal = $v['amount'] * $product->price;
-                if ($v['amount'] > $product->stock) {
-                    throw new Exception("Maximum buy $product->product_name is $product->stock");
+                $subtotal = $v['amount'] * $inventory->price;
+                if ($v['amount'] > $inventory->stock) {
+                    throw new Exception("Maximum buy $inventory->product_name is $inventory->stock");
                 }
                 return [
                     'amount' => $v['amount'],
-                    'product_id' => $v['id'],
-                    'at_time_price' => $product->price,
+                    'inventory_id' => $inventory->id,
+                    'at_time_price' => $inventory->price,
                     'subtotal_price' => $subtotal,
                 ];
             });

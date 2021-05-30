@@ -37,12 +37,17 @@ class ProductTest extends TestCase
     public function testCreateSuccess()
     {
         $product = Product::factory()->make();
-        $this->actingAs($this->adminRetail())
-            ->post("/product", array_merge(
+        $request = $this->actingAs($this->adminRetail())
+            ->call(
+                "POST",
+                "/product",
                 $product->toArray(),
+                [],
                 ['image' => UploadedFile::fake()->image('file.png', 600, 600)]
-            ))
-            ->seeJson(['success' => true]);
+            );
+        $content = json_decode($request->baseResponse->getContent());
+        $this->assertEquals(Response::HTTP_CREATED, $request->baseResponse->getStatusCode());
+        $this->assertTrue($content->success);
         $this->seeInDatabase((new Product)->getTable(), ['name' => $product->name]);
     }
 

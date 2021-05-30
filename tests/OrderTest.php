@@ -34,14 +34,15 @@ class OrderTest extends TestCase
             'stock' => 20,
         ])->create();
 
-        $this->actingAs($user)
+        $request = $this->actingAs($user)
             ->post('/order', [
                 'store_id' => $store->id,
                 'products' => [
                     ['id' => $product1->id, 'amount' => 5],
                     ['id' => $product2->id, 'amount' => 10],
                 ]
-            ])
+            ]);
+        $request
             ->seeStatusCode(Response::HTTP_CREATED)
             ->seeJson(['success' => true]);
 

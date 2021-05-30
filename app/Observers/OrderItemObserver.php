@@ -25,13 +25,8 @@ trait OrderItemObserver
         $order = $item->order;
         if (!$order) return;
 
-        $inventory = Inventory::where([
-            'store_id' => $order->store_id,
-            'product_id' => $item->product_id
-        ])->first();
-
         if (in_array($order->status, ['finished', 'wait_delivery'])) {
-            $inventory->decrement('stock', $item->amount);
+            $item->inventory->decrement('stock', $item->amount);
         }
     }
 }

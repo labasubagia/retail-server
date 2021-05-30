@@ -26,19 +26,14 @@ trait OrderObserver
 
     private static function updateItemStock(Order $order, string $type)
     {
-        $order->items->each(function ($item) use ($order, $type) {
-
-            $inventory = Inventory::where([
-                'store_id' => $order->store_id,
-                'product_id' => $item->product_id,
-            ])->first();
+        $order->items->each(function ($item) use ($type) {
 
             if (strtolower($type) == 'decrement') {
-                $inventory->decrement('stock', $item->amount);
+                $item->inventory->decrement('stock', $item->amount);
             }
 
             if (strtolower($type) == 'increment') {
-                $inventory->increment('stock', $item->amount);
+                $item->inventory->increment('stock', $item->amount);
             }
         });
     }
