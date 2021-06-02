@@ -6,13 +6,16 @@ use App\Models\Inventory;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
     public function index(Request $request)
     {
         $inventories = Inventory::info()
+            ->when(
+                $request->get('product_type_id'),
+                fn ($query) => $query->where('product_types.id', $request->get('product_type_id'))
+            )
             ->when(
                 $request->get('store_id'),
                 fn ($query) => $query->where('store_id', $request->get('store_id'))
