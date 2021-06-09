@@ -43,4 +43,9 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

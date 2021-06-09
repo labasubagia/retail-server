@@ -126,3 +126,14 @@ $router->group(
         $router->post('{id}/status', 'OrderController@updateStatus');
     }
 );
+
+$router->group(
+    ['prefix' => 'query', 'middleware' => ['auth']],
+    function () use ($router) {
+        $router->get('top-selling-product', 'QueryController@topSellingProduct');
+        $router->get('top-sell-store', 'QueryController@topSellStore');
+        $router->get('compare-two-product-sell', 'QueryController@compareSellingTwoProduct');
+        $router->get('outsell-product-store', 'QueryController@outSellProductStore');
+        $router->get('top-buy-within-product', 'QueryController@topBuyWithinProduct');
+    }
+);
