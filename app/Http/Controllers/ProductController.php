@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UploadHelper;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -40,15 +39,8 @@ class ProductController extends Controller
         ]);
         try {
             $payload = $request->only((new Product)->getFillable());
-
-            if ($request->hasFile('image')) {
-                $name = time() . "." . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->move($this->imagePath, $name);
-                $payload['image'] = $name;
-            }
-
+            $payload['image'] = UploadHelper::imgBB($request->file('image'));
             $product = Product::create($payload);
-
             return response()->json(
                 ['success' => true, 'product' => $product],
                 Response::HTTP_CREATED
@@ -69,16 +61,9 @@ class ProductController extends Controller
         try {
             $product = Product::findOrFail($id);
             $payload = $request->only((new Product)->getFillable());
-
             if ($request->hasFile('image')) {
-                $name = time() . "." . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->move($this->imagePath, $name);
-                $payload['image'] = $name;
-
-                $old = "$this->imagePath/$product->image";
-                if (file_exists($old) && is_file($old)) unlink($old);
+                $payload['image'] = UploadHelper::imgBB($request->file('image'));
             }
-
             $product->update($payload);
             return response()->json(['success' => true, 'product' => $product]);
         } catch (Exception $e) {

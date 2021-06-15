@@ -9,7 +9,6 @@ use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 
 class QueryController extends Controller
 {
@@ -34,7 +33,7 @@ class QueryController extends Controller
             ->when($address, fn ($q) => $q->where('stores.address', $address))
             ->select([
                 'products.*',
-                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as image_url"),
+                'products.image as image_url',
                 DB::raw("SUM(order_items.amount) as amount"),
                 DB::raw("SUM(order_items.subtotal_price) as subtotal_price"),
                 DB::raw('SUM(order_items.subtotal_price)/SUM(order_items.amount) as price'),
@@ -144,7 +143,7 @@ class QueryController extends Controller
                 $store->is_outsell = $sell1 > $sell2;
                 return $store;
             });
-            // ->filter(fn ($store) => $store->is_outsell);
+        // ->filter(fn ($store) => $store->is_outsell);
 
         return response()->json($stores);
     }

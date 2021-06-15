@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 
 class Inventory extends Model
 {
@@ -17,28 +15,22 @@ class Inventory extends Model
 
     public function scopeInfo($query)
     {
-        $selected = [
-            'inventories.*',
-            'stores.name as store_name',
-            'vendors.name as vendor_name',
-            'product_types.name as product_type',
-            'brands.name as brand_name',
-            'products.name as product_name',
-            'products.barcode as product_barcode',
-        ];
-        if (env('APP_ENV') != 'testing') {
-            array_push(
-                $selected,
-                DB::raw("CONCAT('" . URL::asset('images/product') . "/', products.image) as product_image"),
-            );
-        }
         return $query
             ->join('stores', 'stores.id', 'inventories.store_id')
             ->join('vendors', 'vendors.id', 'inventories.vendor_id')
             ->join('products', 'products.id', 'inventories.product_id')
             ->join('brands', 'brands.id', 'products.brand_id')
             ->join('product_types', 'product_types.id', 'products.product_type_id')
-            ->select($selected);
+            ->select([
+                'inventories.*',
+                'stores.name as store_name',
+                'vendors.name as vendor_name',
+                'product_types.name as product_type',
+                'brands.name as brand_name',
+                'products.name as product_name',
+                'products.barcode as product_barcode',
+                'products.image as product_image'
+            ]);
     }
 
     public function product()
