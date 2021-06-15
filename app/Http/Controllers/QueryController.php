@@ -48,7 +48,7 @@ class QueryController extends Controller
 
     public function topSellStore(Request $request)
     {
-        $year = $request->get('year', Carbon::now()->year());
+        $year = $request->get('year', Carbon::now()->year);
         $limit = $request->get('limit', 5);
 
         $result = Store::join('orders', 'orders.store_id', 'stores.id')
@@ -143,8 +143,8 @@ class QueryController extends Controller
                 $store->p2_sell = $sell2;
                 $store->is_outsell = $sell1 > $sell2;
                 return $store;
-            })
-            ->filter(fn ($store) => $store->is_outsell);
+            });
+            // ->filter(fn ($store) => $store->is_outsell);
 
         return response()->json($stores);
     }
@@ -168,7 +168,7 @@ class QueryController extends Controller
 
         // get all other product ids that buy with productId
         $productIds = OrderItem::join('inventories', 'inventories.id', 'order_items.id')
-            ->where('order_id', $orderIds)
+            ->whereIn('order_id', $orderIds)
             ->where('inventories.product_id', '!=', $id)
             ->pluck('inventories.product_id');
 
