@@ -16,7 +16,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('store_id')
                 ->nullable()
-                ->constrained('stores')
+                ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -32,6 +32,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             if (env('DB_CONNECTION') !== 'sqlite') {
                 $table->dropForeign('users_store_id_foreign');
+                $table->dropColumn('store_id');
             }
         });
     }

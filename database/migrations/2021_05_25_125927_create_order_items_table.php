@@ -17,9 +17,11 @@ class CreateOrderItemsTable extends Migration
             $table->id();
             $table->foreignId('order_id')
                 ->nullable()
+                ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId('inventory_id')
+                ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->unsignedInteger('amount');
