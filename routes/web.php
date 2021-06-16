@@ -13,6 +13,10 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 
 $router->group(['prefix' => 'user'], function () use ($router) {
     $router->get('type', 'UserController@getAllByType');
+    $router->group(['middleware' => ['auth', 'user_type:admin_retail']], function () use ($router) {
+        $router->put('{id}', 'UserController@update');
+        $router->delete('{id}', 'UserController@destroy');
+    });
 });
 
 $router->group(['prefix' => 'check'], function () use ($router) {
