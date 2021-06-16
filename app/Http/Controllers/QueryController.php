@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -166,16 +167,32 @@ class QueryController extends Controller
             ->pluck('orders.id');
 
         // get all other product ids that buy with productId
-        $productIds = OrderItem::join('inventories', 'inventories.id', 'order_items.id')
+        $items = OrderItem::join('inventories', 'inventories.id', 'order_items.id')
             ->whereIn('order_id', $orderIds)
             ->where('inventories.product_id', '!=', $id)
-            ->pluck('inventories.product_id');
+            ->select([
+                'inventories.product_id',
+                'order_items.amount',
+                'order_items.subtotal_price',
+            ])
+            ->get();
 
         // get all other products
-        $products = Product::whereIn('products.id', $productIds)
-            ->take($limit)
+        $products = Product::whereIn('products.id', $items->pluck('product_id'))
             ->info()
             ->get();
+
+        // use amount & price in products
+        foreach ($items as $item) {
+            foreach ($products as $product) {
+                if ($item->product_id == $product->id) {
+                    $product->amount += $item->amount;
+                    $product->subtotal_price += $item->subtotal_price;
+                }
+            }
+        }
+
+        $products = $products->sortByDesc('amount')->take($limit);
 
         return response()->json($products);
     }
