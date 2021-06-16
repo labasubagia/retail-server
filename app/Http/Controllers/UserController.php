@@ -16,6 +16,7 @@ class UserController extends Controller
             $request->get('type'),
             fn ($q) => $q->where('type', $request->get('type'))
         )
+            ->with('store')
             ->get();
         return response()->json([
             'success' => true,
@@ -33,13 +34,16 @@ class UserController extends Controller
             );
         };
         $this->validate($request, [
-            'email' => "email|unique:users,email,$user->email",
+            'email' => "email|unique:users,email,{$id}",
             'name' => 'string',
             'type' => 'string|in:admin_retail,admin_store,customer',
             'store_id' => 'required_if:type,==,admin_store',
         ]);
         try {
             $payload = $request->only((new User)->getFillable());
+            if ($request->has('password') && !$request->password) {
+                unset($payload['password']);
+            }
             if ($request->password) {
                 $payload['password'] = Hash::make($payload['password']);
             }
