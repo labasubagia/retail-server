@@ -18,12 +18,15 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('barcode');
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('product_type_id');
-            $table->unsignedBigInteger('brand_id');
+            $table->foreignId('product_type_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('brand_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('product_type_id')->references('id')->on('product_types');
-            $table->foreign('brand_id')->references('id')->on('brands');
         });
     }
 

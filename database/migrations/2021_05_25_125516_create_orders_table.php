@@ -17,14 +17,20 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedInteger('total_price')->default(0);
             $table->enum('status', ['finished', 'wait_delivery', 'cancelled'])->default('finished');
-            $table->unsignedBigInteger('store_id');
-            $table->unsignedBigInteger('customer_id')->nullable();
-            $table->unsignedBigInteger('created_by');
+            $table->foreignId('store_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('customer_id')
+                ->nullable()
+                ->constrained('users', 'id')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('created_by')
+                ->constrained('users', 'id')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('store_id')->references('id')->on('stores');
-            $table->foreign('customer_id')->references('id')->on('users');
-            $table->foreign('created_by')->references('id')->on('users');
         });
     }
 

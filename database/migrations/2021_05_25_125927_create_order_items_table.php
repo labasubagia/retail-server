@@ -15,15 +15,17 @@ class CreateOrderItemsTable extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id')->nullable();
-            $table->unsignedBigInteger('inventory_id');
+            $table->foreignId('order_id')
+                ->nullable()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreignId('inventory_id')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->unsignedInteger('amount');
             $table->unsignedInteger('at_time_price');
             $table->unsignedInteger('subtotal_price');
             $table->timestamps();
-
-            $table->foreign('order_id')->references('id')->on('orders');
-            $table->foreign('inventory_id')->references('id')->on('inventories');
         });
     }
 
