@@ -56,7 +56,7 @@ class ProductController extends Controller
     public function update(Request $request, string $id)
     {
         $this->validate($request, [
-            'image' => 'image',
+            'image' => 'image|nullable',
         ]);
         try {
             $product = Product::findOrFail($id);
