@@ -1,24 +1,54 @@
-# Lumen PHP Framework
+# Mahabharata Retail Server
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+This is restful-API of Mahabharata Retail
+This project using Lumen Framework (PHP), go there for further information [here](https://lumen.laravel.com/docs).
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+Full project documentation [here](https://www.notion.so/Final-Project-Mahabharata-Retail-dcb555d645804a17ac5bd98c5129f847)
 
-## Official Documentation
+## Requirement
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+### Server
 
-## Contributing
+-   PHP >= 7.3
+-   OpenSSL PHP Extension
+-   PDO PHP Extension
+-   Mbstring PHP Extension
+-   MYSQL Database
+-   For more information [link](https://lumen.laravel.com/docs/8.x/installation#server-requirements)
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Package Manager
 
-## Security Vulnerabilities
+-   [Composer](https://getcomposer.org/)
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## Installation
 
-## License
+1. create your MYSQL database table
+2. rename env.example to .env
+3. update database settings in .env based on your database server configuration. For more information [here](https://lumen.laravel.com/docs/8.x/database)
+4. config **UPLOAD_IMAGE_TOKEN** using **imgbb**.
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    For more information [here](https://api.imgbb.com/)
+
+5. Install required package
+    ```bash
+    $ composer install
+    ```
+6. migrate database
+    ```bash
+    $ php artisan migrate:fresh --seed
+    ```
+7. run server
+    ```bash
+    $ php -S localhost:8000 -t public
+    ```
+
+## Default Account
+
+email
+
+-   retail1@mail.com
+-   store1@mail.com
+-   store2@mail.com
+-   customer1@mail.com
+
+password: 12345678
