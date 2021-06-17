@@ -56,6 +56,11 @@ $router->group(
     }
 );
 
+$router->get('store-locations', [
+    'middleware' => ['auth', 'user_type:admin_retail'],
+    'uses' => 'StoreController@getLocations'
+]);
+
 $router->group(
     ['prefix' => 'brand'],
     function () use ($router) {

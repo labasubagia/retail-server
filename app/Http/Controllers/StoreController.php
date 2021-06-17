@@ -6,6 +6,7 @@ use App\Models\Store;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
@@ -21,6 +22,17 @@ class StoreController extends Controller
             ['success' => true, 'store' => $store],
             $store ? Response::HTTP_OK : Response::HTTP_NOT_FOUND
         );
+    }
+
+    public function getLocations()
+    {
+        $locations = Store::select([
+            DB::raw('COUNT(*) as count'),
+            'address'
+        ])
+            ->groupBy('address')
+            ->get();
+        return response()->json($locations);
     }
 
     public function store(Request $request)

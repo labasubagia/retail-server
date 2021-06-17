@@ -51,7 +51,8 @@ class QueryController extends Controller
         $year = $request->get('year', Carbon::now()->year);
         $limit = $request->get('limit', 5);
 
-        $result = Store::join('orders', 'orders.store_id', 'stores.id')
+        // get store with most order
+        $stores = Store::join('orders', 'orders.store_id', 'stores.id')
             ->whereNotIn('orders.id', $this->getCancelledOrderIds())
             ->whereYear('orders.created_at', $year)
             ->select([
@@ -63,7 +64,27 @@ class QueryController extends Controller
             ->take($limit)
             ->get();
 
-        return response()->json($result);
+        // orders based on store
+        $orders = Order::whereIn('store_id', $stores->pluck('id'))
+            ->whereNotIn('orders.id', $this->getCancelledOrderIds())
+            ->join('order_items', 'order_items.order_id', 'orders.id')
+            ->groupBy('store_id')
+            ->select([
+                'store_id',
+                DB::raw('SUM(order_items.amount) as amount')
+            ])
+            ->get();
+
+        // use amount in products
+        foreach ($stores as $store) {
+            foreach ($orders as $order) {
+                if ($store->id == $order->store_id) {
+                    $store->amount += (int)$order->amount;
+                }
+            }
+        }
+
+        return response()->json($stores);
     }
 
     public function compareSellingTwoProduct(Request $request)
