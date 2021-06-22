@@ -182,13 +182,13 @@ class QueryController extends Controller
 
         // get order ids where productId is included
         $orderIds = Order::join('order_items', 'order_items.order_id', 'orders.id')
-            ->join('inventories', 'inventories.id', 'order_items.id')
+            ->join('inventories', 'inventories.id', 'order_items.inventory_id')
             ->whereNotIn('orders.id', $this->getCancelledOrderIds())
             ->where('inventories.product_id', $id)
             ->pluck('orders.id');
 
         // get all other product ids that buy with productId
-        $items = OrderItem::join('inventories', 'inventories.id', 'order_items.id')
+        $items = OrderItem::join('inventories', 'inventories.id', 'order_items.inventory_id')
             ->whereIn('order_id', $orderIds)
             ->where('inventories.product_id', '!=', $id)
             ->select([
