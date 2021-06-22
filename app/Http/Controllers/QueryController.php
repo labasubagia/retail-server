@@ -213,7 +213,9 @@ class QueryController extends Controller
             }
         }
 
-        $products = $products->sortByDesc('amount')->take($limit);
+        $products = $products->sortByDesc('amount')
+            ->take($limit)
+            ->values();
 
         return response()->json($products);
     }
