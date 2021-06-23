@@ -134,30 +134,31 @@ class QueryController extends Controller
         $id2 = $request->get('product_id_2');
 
         // get product with sell amount
-        $getSellProducts = fn ($storeId, $productIds) =>
-        Product::whereIn('products.id', $productIds)
-            ->where('stores.id', $storeId)
-            ->join('inventories', 'inventories.product_id', 'products.id')
-            ->join('order_items', 'order_items.inventory_id', 'inventories.id')
-            ->join('stores', 'stores.id', 'inventories.store_id')
+        $products = Inventory::whereIn('inventories.product_id', [$id1, $id2])
+            ->whereNotIn('order_items.order_id', $this->getCancelledOrderIds())
+            ->leftJoin('products', 'products.id', 'inventories.product_id')
+            ->leftJoin('order_items', 'order_items.inventory_id', 'inventories.id')
             ->select([
-                'inventories.product_id',
-                'products.*',
-                DB::raw("SUM(order_items.amount) as amount"),
+                'inventories.*',
+                DB::raw('SUM(order_items.amount) as amount')
             ])
-            ->groupBy('product_id')
-            ->get()
-            ->values();
+            ->groupBy('inventories.id')
+            ->get();
+
+        $getProduct = function ($storeId, $productId) use ($products) {
+            return collect($products)
+                ->Where('store_id', $storeId)
+                ->firstWhere('product_id', $productId);
+        };
 
         // loop to get products and compare it
         $stores = Store::all()
-            ->map(function ($store) use ($getSellProducts, $id1, $id2) {
-                $products = $getSellProducts($store->id, [$id1, $id2]);
+            ->map(function ($store) use ($getProduct, $id1, $id2) {
 
-                $product1 = collect($products)->firstWhere('product_id', $id1);
+                $product1 = $getProduct($store->id, $id1);
                 $sell1 = (int)($product1->amount ?? 0);
 
-                $product2 = collect($products)->firstWhere('product_id', $id2);
+                $product2 = $getProduct($store->id, $id2);
                 $sell2 = (int)($product2->amount ?? 0);
 
                 $store->p1_sell = $sell1;
